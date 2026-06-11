@@ -8,6 +8,7 @@ const Review = require("./models/review.js");
 
 
 module.exports.isLoggedIn = (req, res, next) => {
+    console.log("REQ.USER in isLoggedIn middleware:", req.user);
     if (!req.isAuthenticated()) {
         req.session.redirectUrl = req.originalUrl;
         req.flash("error", "You must be logged in to create listings!");
@@ -26,7 +27,8 @@ module.exports.saveRedirectUrl = (req, res, next)=>{
 module.exports.isOwner = async(req,res,next)=>{
     let {id} = req.params;
     let listing = await Listing.findById(id);
-    if(!listing.owner._id.equals(res.locals.currentUser._id)){
+    // if(!listing.owner._id.equals(res.locals.currentUser._id)){
+    if(!listing.owner._id.equals(req.user._id)){
     req.flash("error", "you don't have permission to edit");
     return res.redirect(`/listings/${id}`);
     }
@@ -63,3 +65,4 @@ module.exports.validateReview = (req, res, next)=>{
         next();
     }
 };
+

@@ -24,6 +24,7 @@ const LocalStrategy = require("passport-local");
 //require user models
 const User = require("./models/user.js");
 
+
 //import routes
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -55,13 +56,14 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const store = MongoStore.create({
     mongoUrl: dbUrl,
+    dbName: "wandarlust",
     crypto: {
         secret: process.env.SECRET,
     },
     touchAfter: 24 * 3600,
 });
 
-store.on("error", ()=>{
+store.on("error", (err)=>{
     console.log("Error in Mongo Session Store", err);
 });
 
@@ -69,14 +71,14 @@ const sessionOptions = {
     store: store,
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
-        expires: Date.now()+ 7*24*60*60*1000,
-        maxAge: 7*24*60*60*1000,
         httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: "lax",
+        secure: false
     }
 };
-
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -89,6 +91,7 @@ passport.deserializeUser(User.deserializeUser());
 
 //middleware for flash message
 app.use((req,res,next)=>{
+    console.log("REQ.USER in middleware:", req.user);
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currentUser = req.user;
@@ -115,28 +118,3 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log(`App is listening on port ${port}`);
 });
-    // app.get("/listings", async (req, res) => {
-    //     try {
-    //         const listings = await Listing.find({});
-    //         console.log(listings); // Logs the listings array to the console
-    //         res.json(listings); // Sends the listings array back to the client as JSON
-    //     } catch (error) {
-    //         console.error("Error fetching listings:", error);
-    //         res.status(500).json({ message: "Error fetching listings" });
-    //     }
-    // });
-    
-
-    // app.get("/testListing", async (req, res) => {
-    //     let sampleListing = new Listing({
-    //         title: "Mountain",
-    //         description: "On the mountain there is natural beauty",
-    //         price: 1000,
-    //         location: "Murree",
-    //         country: "Pakistan",
-    //     });
-    //     await sampleListing.save();
-    //     console.log("Sample listing was saved");
-    //     res.send("Successfully tested the listing save operation");
-    // });
-
