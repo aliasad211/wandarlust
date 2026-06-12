@@ -59,9 +59,6 @@ const secret = process.env.SECRET || "mysupersecretstring";
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     dbName: "wandarlust",
-    crypto: {
-        secret: secret,
-    },
     touchAfter: 24 * 3600,
 });
 
@@ -110,6 +107,7 @@ app.all("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+    console.error("Error Handler Caught:", err);
     // Destructure `statusCode` instead of `StatusCode`
     const { statusCode = 500, message = "Something went wrong" } = err;
     res.status(statusCode).render("error.ejs", {message}); 
