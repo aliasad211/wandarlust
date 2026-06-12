@@ -8,9 +8,9 @@
         <h3><%= listing.title %></h3>
     </div>
     <div class="card col-6 offset-3 show-card listing-card">
-    <img src="<%= listing.image.url%>" class="card-img-top show-img" alt="listing-image">
+    <img src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?auto=format&fit=crop&w=800&q=60' %>" class="card-img-top show-img" alt="listing-image">
         <div class="card-body">
-            <p class="card-text">Owned by <i><%= listing.owner.username %></i></p>
+            <p class="card-text">Owned by <i><%= listing.owner ? listing.owner.username : 'Unknown' %></i></p>
             <p class="card-text"><%= listing.description %></p>
             <p class="card-text"><%= listing.price.toLocaleString('en-PK', { style: 'currency', currency: 'PKR' }); %></p>
             <p class="card-text"><%= listing.location %></p>
@@ -18,7 +18,7 @@
             
         </div>
     </div>
-    <% if(currentUser && listing.owner._id.equals(currentUser._id)){ %>
+    <% if(currentUser && listing.owner && listing.owner._id.equals(currentUser._id)){ %>
     <div class="btns mb-4">
         <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
         <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST">
@@ -63,14 +63,16 @@
             <% listing.reviews.forEach(review => { %>
                     <div class="card col-5 ms-3 mb-3">
                         <div class="card-body">
-                            <h5 class="card-title">@<%= review.author.username %></h5>
+                            <h5 class="card-title">@<%= review.author ? review.author.username : 'Unknown' %></h5>
                             <p class="starability-result" data-rating="<%= review.rating %>"></p>
                             <p class="card-text"><%= review.comment %></p>
                         </div>
+                        <% if(currentUser && review.author && review.author._id.equals(currentUser._id)){ %>
                         <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mb-3" method="post">
                             <input type="hidden" name="_method" value="DELETE">
                             <button class="btn btn-sm btn-dark">Delete</button>
-                        </form>                        
+                        </form>
+                        <% } %>                        
                     </div>
             <% }) %>
         </div>

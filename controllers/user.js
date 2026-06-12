@@ -42,12 +42,12 @@ module.exports.login = (req, res)=>{
 };
 
 
-module.exports.logout = (req, res)=>{
+module.exports.logout = (req, res, next)=>{
     req.logOut((err)=>{
         if(err) {
             return next(err);
         }
-        req.flash("success", "you are logged out");
+        req.flash("success", "You are logged out!");
         res.redirect("/listings");
     });
 };
