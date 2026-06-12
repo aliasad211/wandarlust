@@ -54,11 +54,13 @@ app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 
 
+const secret = process.env.SECRET || "mysupersecretstring";
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     dbName: "wandarlust",
     crypto: {
-        secret: process.env.SECRET,
+        secret: secret,
     },
     touchAfter: 24 * 3600,
 });
@@ -69,7 +71,7 @@ store.on("error", (err)=>{
 
 const sessionOptions = {
     store: store,
-    secret: process.env.SECRET,
+    secret: secret,
     resave: false,
     saveUninitialized: false,
     cookie: {
