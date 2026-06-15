@@ -13,8 +13,192 @@
     <link rel="stylesheet" href="/css/rating.css">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.2/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.2/mapbox-gl.js"></script>
+    <style>
+        /* Splash Screen CSS */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        body.loading {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .splash-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: #ffffff;
+            font-family: "Noto Sans", sans-serif;
+        }
+
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 15px rgba(254, 66, 77, 0.5));
+        }
+
+        .ring-pulse {
+            animation: pulse-ring 2s infinite ease-in-out;
+            transform-origin: center;
+        }
+
+        .needle-spin {
+            animation: compass-spin 3.5s infinite cubic-bezier(0.68, -0.6, 0.32, 1.6);
+            transform-origin: 50px 50px;
+        }
+
+        .splash-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin: 0;
+            background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInDown 0.8s ease-out both;
+        }
+
+        .splash-subtitle {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin-top: 0.5rem;
+            margin-bottom: 2rem;
+            letter-spacing: 1.5px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .splash-loader {
+            width: 180px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .loader-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #fe424d, #f43f5e);
+            position: absolute;
+            left: -100%;
+            animation: loading-progress 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+                stroke: #fe424d;
+            }
+            50% {
+                transform: scale(1.04);
+                opacity: 1;
+                stroke: #f43f5e;
+                stroke-width: 4px;
+            }
+        }
+
+        @keyframes compass-spin {
+            0% { transform: rotate(0deg); }
+            15% { transform: rotate(80deg); }
+            30% { transform: rotate(-40deg); }
+            55% { transform: rotate(260deg); }
+            70% { transform: rotate(140deg); }
+            85% { transform: rotate(380deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes loading-progress {
+            0% {
+                left: -100%;
+                width: 30%;
+            }
+            50% {
+                width: 60%;
+            }
+            100% {
+                left: 100%;
+                width: 30%;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="loading">
+    <!-- Splash Screen UI -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <svg class="splash-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer Ring -->
+                <circle cx="50" cy="50" r="42" stroke="#fe424d" stroke-width="3" fill="none" class="ring-pulse" />
+                <circle cx="50" cy="50" r="35" stroke="rgba(254, 66, 77, 0.15)" stroke-width="1" fill="none" />
+                <!-- Ticks -->
+                <line x1="50" y1="12" x2="50" y2="16" stroke="#fe424d" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="50" y1="88" x2="50" y2="84" stroke="#fe424d" stroke-width="1.5" stroke-linecap="round" />
+                <line x1="12" y1="50" x2="16" y2="50" stroke="#fe424d" stroke-width="1.5" stroke-linecap="round" />
+                <line x1="88" y1="50" x2="84" y2="50" stroke="#fe424d" stroke-width="1.5" stroke-linecap="round" />
+                <!-- Compass Needle -->
+                <g class="needle-spin">
+                    <!-- North Pointer (Red) -->
+                    <polygon points="50,20 45,50 50,50" fill="#f43f5e" />
+                    <polygon points="50,20 55,50 50,50" fill="#fe424d" />
+                    <!-- South Pointer (Silver/Grey) -->
+                    <polygon points="50,80 45,50 50,50" fill="#cbd5e1" />
+                    <polygon points="50,80 55,50 50,50" fill="#94a3b8" />
+                    <!-- Center Pivot Pin -->
+                    <circle cx="50" cy="50" r="3" fill="#ffffff" />
+                    <circle cx="50" cy="50" r="1" fill="#0f172a" />
+                </g>
+            </svg>
+            <h1 class="splash-title">WandarLust</h1>
+            <p class="splash-subtitle">Finding your next adventure...</p>
+            <div class="splash-loader">
+                <div class="loader-bar"></div>
+            </div>
+        </div>
+    </div>
+
     <%- include("../includes/navbar.ejs") %>
     <div class="container">
         <%- include("../includes/flash.ejs") %>
@@ -23,5 +207,19 @@
     <%- include("../includes/footer.ejs") %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="/js/script.js"></script>
+    
+    <!-- Splash Screen JS Loader -->
+    <script>
+        window.addEventListener('load', () => {
+            const splashScreen = document.getElementById('splash-screen');
+            if (splashScreen) {
+                splashScreen.classList.add('fade-out');
+                document.body.classList.remove('loading');
+                setTimeout(() => {
+                    splashScreen.remove();
+                }, 500); // matches the transition duration in CSS
+            }
+        });
+    </script>
 </body>
 </html>
