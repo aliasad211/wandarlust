@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Outer ring matching the FontAwesome compass border -->
+  <circle cx="50" cy="50" r="40" stroke="#fe424d" stroke-width="8" fill="none" />
+  
+  <!-- Compass Needle rotated 45 degrees to match the FontAwesome logo diagonal look -->
+  <g transform="rotate(45 50 50)">
+    <!-- North-East Pointer (Filled Red) -->
+    <polygon points="50,18 58,50 42,50" fill="#fe424d" />
+    
+    <!-- South-West Pointer (Hollow Red Outline) -->
+    <polygon points="50,82 58,50 42,50" fill="none" stroke="#fe424d" stroke-width="5" stroke-linejoin="round" />
+    
+    <!-- Center Pivot Pin -->
+    <circle cx="50" cy="50" r="5" fill="#fe424d" />
+    <circle cx="50" cy="50" r="2" fill="#ffffff" />
+  </g>
+</svg>
